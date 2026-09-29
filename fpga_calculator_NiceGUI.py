@@ -1,3 +1,4 @@
+import os
 from nicegui import ui
 
 # -------------------------
@@ -363,4 +364,5 @@ with ui.card().classes("w-full max-w-md mx-auto p-4 bg-blue-100 border border-bl
             ui.button("Reset", on_click=lambda e: process_button("Reset")).classes("h-10 text-sm")
             ui.button("Enter", on_click=lambda e: process_button("Enter")).classes("h-10 text-sm")
 
-ui.run(host="0.0.0.0", port=8080)
+port = int(os.environ.get('PORT', 8080))
+ui.run(host='0.0.0.0', port=port, reload=False)
