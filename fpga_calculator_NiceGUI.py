@@ -335,7 +335,7 @@ with ui.card().classes("w-full max-w-md mx-auto p-4 bg-blue-100 border border-bl
     ui.label('Output Format').classes('text-xs')
     output_mode = ui.radio(MODES, value=MODES[0]).props('inline').classes('small-radio')
 
-    use_keypad = ui.checkbox("Use Keypad", value=False)
+    use_keypad = ui.checkbox("Use Keypad", value=True)
 
     keypad_container = ui.element()
     pc_buttons_container = ui.element()
