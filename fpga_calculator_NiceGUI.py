@@ -351,16 +351,16 @@ with ui.card().classes("w-full max-w-md mx-auto p-4 bg-blue-100 border border-bl
     use_keypad.bind_value_to(pc_buttons_container, "visible", lambda v: not v)
 
     keypad = [
-        ("7","8","9","/"),
-        ("4","5","6","*"),
-        ("1","2","3","-"),
-        ("0",".","R","+"),
-        ("A","B","C","D"),
-        ("E","F","Enter","=")
+        ("7","8","9","/", "%"),
+        ("4","5","6","*", "&"),
+        ("1","2","3","-", "|"),
+        ("0",".","R","+", "^"),
+        ("A","B","C","D", "~"),
+        ("E","F","Enter","=", "2's")
     ]
 
     with keypad_container:
-        with ui.grid(columns=4).classes("gap-2 mt-4"):
+        with ui.grid(columns=5).classes("gap-2 mt-4"):
             for row in keypad:
                 for key in row:
                     ui.button(key, on_click=lambda e, k=key: process_button(k)).classes("h-10 text-sm")
