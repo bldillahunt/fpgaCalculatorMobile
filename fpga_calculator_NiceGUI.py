@@ -8,12 +8,6 @@ from binary_support import precision_profile, lookup_table, twos_complement, bin
 from binary_conversions import real_to_twos_comp_binary, hexadecimal_to_binary, ieee754_hex_to_binary, binary_to_real, binary_to_hexadecimal, binary_to_ieee754
 from binary_math import binary_division, binary_multiplier, binary_adder, binary_subtraction
 
-@ui.page('/', 
-         title="FPGA Multi-Type Calculator | IEEE-754 & 2's Complement Binary Point Converter", 
-         meta={
-             'description': "An arbitrary-precision binary calculator and multi-data-type converter for FPGA engineers. Supports IEEE 754 floating-point conversions, fixed-point math, and two's complement calculations with explicit binary points.",
-             'keywords': "IEEE754 converter, two's complement binary point calculator, multiple data type converter, FPGA fixed-point calculator, arbitrary precision binary converter, hardware engineering tools"
-         })
 # -------------------------
 # GLOBAL STATE
 # -------------------------
