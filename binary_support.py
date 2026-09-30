@@ -555,3 +555,16 @@ def binary_point_alignment(operand_a, operand_b, enable_twos_complement):
 		operand_b_padded = operand_b_padded_left
 
 	return operand_a_padded, operand_b_padded, a_fraction_size, b_fraction_size
+
+def add_msbs(A, B):
+	a_length = len(A)
+	b_length = len(B)
+	
+	if (a_length > b_length):
+		a_padded = A
+		b_padded = [0]*(a_length - b_length) + B
+	else:
+		a_padded = [0]*(b_length - a_length) + A
+		b_padded = B
+	
+	return a_padded, b_padded
