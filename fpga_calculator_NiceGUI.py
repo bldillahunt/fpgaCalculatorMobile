@@ -55,6 +55,23 @@ def process_button(val):
 # -------------------------
 # UI LAYOUT
 # -------------------------
+# 1. Define the hidden Help Dialog
+with ui.dialog() as help_dialog, ui.card().classes('w-80 max-w-sm p-4'):
+	ui.label('How to Use the Calculator').classes('text-lg font-bold mb-2')
+
+	ui.label('''Format:
+	<operand1><operator><operand2>
+	or
+	<operand1>''').classes('text-sm font-mono bg-gray-100 p-2 rounded mb-4 whitespace-pre-line')
+
+	ui.markdown('''
+	- **Inputs:** Supports Real, Hex, Bin, FP32, and FP64.
+	- **Binary:** Entered in 2's complement with a binary point.
+	- **Operations:** Select math (+,-,*,/,%) or logic (&,|,^,~,!).
+	- **Keypad:** Toggle on for mobile layout touch inputs.
+	''').classes('text-sm mb-4')
+    
+	ui.button('Close', on_click=help_dialog.close).classes('w-full mt-2')
 
 ui.add_head_html("""
 <style>
@@ -81,7 +98,9 @@ with ui.card().classes("w-full max-w-md mx-auto p-4 bg-blue-100 border border-bl
 	ui.label('Output Format').classes('text-xs')
 	output_mode = ui.radio(MODES, value=MODES[0]).props('inline').classes('small-radio')
 
-	use_keypad = ui.checkbox("Use Keypad", value=True)
+	with ui.row().classes('items-center justify-between w-full px-2'):
+		use_keypad = ui.checkbox("Use Keypad", value=True)
+		ui.button(icon='help_outline', on_click=help_dialog.open).props('flat round size=md').classes('text-gray-500')
 
 	keypad_container = ui.element()
 	pc_buttons_container = ui.element()
