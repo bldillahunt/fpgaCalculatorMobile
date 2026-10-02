@@ -66,10 +66,17 @@ def compute_evaluation_step(main_display_value, input_mode, output_mode, int_bit
 			return "", "ERROR"
 			
 		elif not operand1_data_error and not operand2_data_error and not operator_error:
-			operand1_binary = convert_to_binary(operand1, input_mode, int_bits, frac_bits)
+			if (operator in ("~", "!")) or ((operand2_present) and (operator in ("&", "|", "^"))):
+				operand1_binary = convert_to_binary(operand1, input_mode, int_bits, 0)	
+			else:
+				operand1_binary = convert_to_binary(operand1, input_mode, int_bits, frac_bits)
 
 			if operand2_present:
-				operand2_binary = convert_to_binary(operand2, input_mode, int_bits, frac_bits)
+				if (operator in ("&", "|", "^")):
+					operand2_binary = convert_to_binary(operand2, input_mode, int_bits, 0)
+				else:
+					operand2_binary = convert_to_binary(operand2, input_mode, int_bits, frac_bits)
+					
 				binary_result = binary_math_operation(operand1_binary, operand2_binary, operator, int_bits, frac_bits, output_mode, enable_print_statements)
 				calculator_result = convert_from_binary(binary_result, output_mode)
 			elif operator in ("~", "!", "2'S"):

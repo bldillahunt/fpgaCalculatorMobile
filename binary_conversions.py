@@ -40,7 +40,15 @@ def hexadecimal_to_binary(n, integer_size, fraction_size, lookup_table):
 		
 #		print(binary_string, single_binary_string, integer_string, fraction_string)
 		
-		return integer_string + '.' + fraction_string
+		if (fraction_size > 0):
+			output_string = integer_string + '.' + fraction_string
+		else:
+			output_string = integer_string
+		
+		if ('.' in output_string) and (fraction_size == 0):
+			return "Binary point in hex value"
+		else:
+			return output_string
 
 # Converts an IEEE754 hexadecimal string to binary
 def ieee754_hex_to_binary(ieee754_hex, p, lookup_table):
@@ -243,6 +251,9 @@ def binary_to_real(n):
 
 def binary_to_hexadecimal(n, lut):
 	n_size = len(n)
+	
+	if isinstance(n, str):
+		return n
 	
 	if ('.' in n):
 		binary_point_index = n.index('.')

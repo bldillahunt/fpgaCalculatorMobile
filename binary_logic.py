@@ -16,7 +16,13 @@ def binary_and(A, B):
 	
 def binary_or(A, B):
 	operand1_no_bin_point, operand2_no_bin_point = add_msbs(A, B)
-	return [bit_a | bit_b for bit_a, bit_b in zip(operand1_no_bin_point, operand2_no_bin_point)]	
+
+	if ('.' in A) or ('.' in B):
+		return "Binary point in logic operation"
+	elif (isinstance(A, str)) or (isinstance(B, str)):
+		return "Text input to binary OR"
+	else:
+		return [bit_a | bit_b for bit_a, bit_b in zip(operand1_no_bin_point, operand2_no_bin_point)]	
 
 def binary_xor(A, B):
 	operand1_no_bin_point, operand2_no_bin_point = add_msbs(A, B)
