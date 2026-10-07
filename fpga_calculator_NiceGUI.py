@@ -48,8 +48,13 @@ def process_button(val):
 		input_box.set_value(main_display_value)
 		output_box.set_text(calculator_result)
 	else:
-		main_display += val
-		input_box.set_value(main_display)
+		if (val == "Back"):
+			current_input = input_box.value
+			main_display = current_input[:-1]
+			input_box.set_value(main_display)
+		else:
+			main_display += val
+			input_box.set_value(main_display)
 	return
 
 # -------------------------
@@ -66,7 +71,7 @@ with ui.dialog() as help_dialog, ui.card().classes('w-80 max-w-sm p-4'):
 
 	ui.markdown('''
 	- **Inputs:** Supports Real, Hex, Bin, FP32, and FP64.
-	- **Binary:** Entered in 2's complement with a binary point.
+	- **Binary:** Entered in 2's complement with a binary point (no 0b).
 	- **Operations:** Select math (+,-,*,/,%) or logic (&,|,^,~,!).
 	- **Keypad:** Toggle on for mobile layout touch inputs.
 	''').classes('text-sm mb-4')
@@ -113,9 +118,9 @@ with ui.card().classes("w-full max-w-md mx-auto p-4 bg-blue-100 border border-bl
 		("7","8","9","/", "%"),
 		("4","5","6","*", "&"),
 		("1","2","3","-", "|"),
-		("0",".","R","+", "^"),
+		("0",".","Reset","+", "^"),
 		("A","B","C","D", "~"),
-		("E","F","Enter","=", "2's")
+		("E","F","Back","=", "2's")
 	]
 
 	with keypad_container:
