@@ -135,4 +135,18 @@ with ui.card().classes("w-full max-w-md mx-auto p-4 bg-blue-100 border border-bl
 			ui.button("Enter", on_click=lambda e: process_button("Enter")).classes("h-10 text-sm")
 
 port = int(os.environ.get('PORT', 8080))
-ui.run(host='0.0.0.0', port=port, reload=False)
+#ui.run(host='0.0.0.0', port=port, reload=False)
+ui.run(
+	host='0.0.0.0', port=port, reload=False,
+	title="Online FPGA & Programmer's Calculator"
+)
+
+ui.add_head_html('''
+	<meta name="description" content="An online arbitrary-precision calculator for FPGA engineers. Supports IEEE 754 floating-point, signed two's complement binary, and custom fixed-point binary math.">
+	<meta name="keywords" content="FPGA calculator, programmer's calculator, IEEE 754 converter, two's complement calculator, fixed point binary point">
+	<meta name="author" content="bldillahunt">
+
+	<!-- Open Graph tags to look good when linked on Reddit or Discord -->
+	<meta property="og:title" content="Online FPGA & Programmer's Calculator">
+	<meta property="og:description" content="Arbitrary-precision binary math, IEEE 754 precision, and signed two's complement calculations.">
+''')
