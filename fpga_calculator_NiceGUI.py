@@ -145,7 +145,7 @@ ui.add_head_html('''
 	<meta name="description" content="An online arbitrary-precision calculator for FPGA engineers. Supports IEEE 754 floating-point, signed two's complement binary, and custom fixed-point binary math.">
 	<meta name="keywords" content="FPGA calculator, programmer's calculator, IEEE 754 converter, two's complement calculator, fixed point binary point">
 	<meta name="author" content="bldillahunt">
-	<meta name="google-site-verification" content="T6pQ-Yt05jwMYU1TwBJM7lNzcgdrOadHDA6gxzsL7Hw"
+	<meta name="google-site-verification" content="ou9nT4teg6SfoxuPxWijNSLlibcPFt_xzHoNGLCY1GY">
 
 	<!-- Open Graph tags to look good when linked on Reddit or Discord -->
 	<meta property="og:title" content="Online FPGA & Programmer's Calculator">
