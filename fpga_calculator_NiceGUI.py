@@ -1,5 +1,6 @@
 import os
-from nicegui import ui
+from fastapi.responses import PlainTextResponse
+from nicegui import app, ui
 
 # -------------------------
 # IMPORT YOUR LOGIC MODULES
@@ -60,79 +61,94 @@ def process_button(val):
 # -------------------------
 # UI LAYOUT
 # -------------------------
-# 1. Define the hidden Help Dialog
-with ui.dialog() as help_dialog, ui.card().classes('w-80 max-w-sm p-4'):
-	ui.label('How to Use the Calculator').classes('text-lg font-bold mb-2')
-
-	ui.label('''Format:
-	<operand1><operator><operand2>
-	or
-	<operand1>''').classes('text-sm font-mono bg-gray-100 p-2 rounded mb-4 whitespace-pre-line')
-
-	ui.markdown('''
-	- **Inputs:** Supports Real, Hex, Bin, FP32, and FP64.
-	- **Binary:** Entered in 2's complement with a binary point (no 0b).
-	- **Operations:** Select math (+,-,*,/,%) or logic (&,|,^,~,!).
-	- **Keypad:** Toggle on for mobile layout touch inputs.
-	''').classes('text-sm mb-4')
-    
-	ui.button('Close', on_click=help_dialog.close).classes('w-full mt-2')
-
-ui.add_head_html("""
-<style>
-body { background-color: #fef3c7; }
-</style>
-""")
-
-with ui.card().classes("w-full max-w-md mx-auto p-4 bg-blue-100 border border-blue-300 rounded-sm"):
-	ui.label("Input").classes('text-sm')
-	input_box = ui.input(value="").classes("text-lg h-13 w-full bg-blue-50 p-2 rounded border border-blue-300")
-
-	ui.label("Output").classes('text-sm')
-	output_box = ui.label("").classes("text-sm h-10 w-full bg-blue-50 p-2 rounded border border-blue-300")
-
-	with ui.row():
-		int_bits_box = ui.input(label="Integer Bits", value="16").classes("text-xs")
-		frac_bits_box = ui.input(label="Fraction Bits", value="16").classes("text-xs")
-
-	ui.add_css('.small-radio .q-radio__label { font-size: 0.50rem; }')
+@ui.page('/', title='Fixed Point and Floating Point math')
+def home_page():
+	global input_box, output_box, input_mode, output_mode, int_bits_box, frac_bits_box
 	
-	ui.label('Input Format').classes('text-xs')
-	input_mode = ui.radio(MODES, value=MODES[0]).props('inline').classes('small-radio')
+	# 2. Use ui.meta() to inject a strong description containing the variations naturally
+	ui.add_head_html(
+		'<meta name="description", content="IEEE-754 converter, floating point calculator, fixed point calculator, two\'s complement math, binary calculator">'
+	)
 
-	ui.label('Output Format').classes('text-xs')
-	output_mode = ui.radio(MODES, value=MODES[0]).props('inline').classes('small-radio')
+	# 1. Define the hidden Help Dialog
+	with ui.dialog() as help_dialog, ui.card().classes('w-80 max-w-sm p-4'):
+		ui.label('How to Use the Calculator').classes('text-lg font-bold mb-2')
 
-	with ui.row().classes('items-center justify-between w-full px-2'):
-		use_keypad = ui.checkbox("Use Keypad", value=True)
-		ui.button(icon='help_outline', on_click=help_dialog.open).props('flat round size=md').classes('text-gray-500')
+		ui.label('''Format:
+		<operand1><operator><operand2>
+		or
+		<operand1>''').classes('text-sm font-mono bg-gray-100 p-2 rounded mb-4 whitespace-pre-line')
 
-	keypad_container = ui.element()
-	pc_buttons_container = ui.element()
+		ui.markdown('''
+		- **Inputs:** Supports Real, Hex, Bin, FP32, and FP64.
+		- **Binary:** Entered in 2's complement with a binary point (no 0b).
+		- **Operations:** Select math (+,-,*,/,%) or logic (&,|,^,~,!).
+		- **Keypad:** Toggle on for mobile layout touch inputs.
+		''').classes('text-sm mb-4')
 
-	# Bind visibility
-	use_keypad.bind_value_to(keypad_container, "visible")
-	use_keypad.bind_value_to(pc_buttons_container, "visible", lambda v: not v)
+		ui.button('Close', on_click=help_dialog.close).classes('w-full mt-2')
 
-	keypad = [
-		("7","8","9","/", "%"),
-		("4","5","6","*", "&"),
-		("1","2","3","-", "|"),
-		("0",".","Reset","+", "^"),
-		("A","B","C","D", "~"),
-		("E","F","Back","=", "2's")
-	]
+	ui.add_head_html("""
+	<style>
+	body { background-color: #fef3c7; }
+	</style>
+	""")
 
-	with keypad_container:
-		with ui.grid(columns=5).classes("gap-2 mt-4"):
-			for row in keypad:
-				for key in row:
-					ui.button(key, on_click=lambda e, k=key: process_button(k)).classes("h-10 text-sm")
+	with ui.card().classes("w-full max-w-md mx-auto p-4 bg-blue-100 border border-blue-300 rounded-sm"):
+		ui.label("Input").classes('text-sm')
+		input_box = ui.input(value="").classes("text-lg h-13 w-full bg-blue-50 p-2 rounded border border-blue-300")
 
-	with pc_buttons_container:
-		with ui.row().classes("mt-4"):
-			ui.button("Reset", on_click=lambda e: process_button("Reset")).classes("h-10 text-sm")
-			ui.button("Enter", on_click=lambda e: process_button("Enter")).classes("h-10 text-sm")
+		ui.label("Output").classes('text-sm')
+		output_box = ui.label("").classes("text-sm h-10 w-full bg-blue-50 p-2 rounded border border-blue-300")
+
+		with ui.row():
+			int_bits_box = ui.input(label="Integer Bits", value="16").classes("text-xs")
+			frac_bits_box = ui.input(label="Fraction Bits", value="16").classes("text-xs")
+
+		ui.add_css('.small-radio .q-radio__label { font-size: 0.50rem; }')
+
+		ui.label('Input Format').classes('text-xs')
+		input_mode = ui.radio(MODES, value=MODES[0]).props('inline').classes('small-radio')
+
+		ui.label('Output Format').classes('text-xs')
+		output_mode = ui.radio(MODES, value=MODES[0]).props('inline').classes('small-radio')
+
+		with ui.row().classes('items-center justify-between w-full px-2'):
+			use_keypad = ui.checkbox("Use Keypad", value=True)
+			ui.button(icon='help_outline', on_click=help_dialog.open).props('flat round size=md').classes('text-gray-500')
+
+		keypad_container = ui.element()
+		pc_buttons_container = ui.element()
+
+		# Bind visibility
+		use_keypad.bind_value_to(keypad_container, "visible")
+		use_keypad.bind_value_to(pc_buttons_container, "visible", lambda v: not v)
+
+		keypad = [
+			("7","8","9","/", "%"),
+			("4","5","6","*", "&"),
+			("1","2","3","-", "|"),
+			("0",".","Reset","+", "^"),
+			("A","B","C","D", "~"),
+			("E","F","Back","=", "2's")
+		]
+
+		with keypad_container:
+			with ui.grid(columns=5).classes("gap-2 mt-4"):
+				for row in keypad:
+					for key in row:
+						ui.button(key, on_click=lambda e, k=key: process_button(k)).classes("h-10 text-sm")
+
+		with pc_buttons_container:
+			with ui.row().classes("mt-4"):
+				ui.button("Reset", on_click=lambda e: process_button("Reset")).classes("h-10 text-sm")
+				ui.button("Enter", on_click=lambda e: process_button("Enter")).classes("h-10 text-sm")
+
+# Explicitly allow all web crawlers to index your NiceGUI site
+@app.get('/robots.txt')
+def get_robots() -> PlainTextResponse:
+    content = "User-agent: *\nAllow: /\n"
+    return PlainTextResponse(content)
 
 port = int(os.environ.get('PORT', 8080))
 #ui.run(host='0.0.0.0', port=port, reload=False)
